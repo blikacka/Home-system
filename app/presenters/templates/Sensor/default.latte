@@ -1,0 +1,74 @@
+{block scripts}
+    {include #parent}
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                loadImagesGraph();
+            }, 5000);
+
+            loadImagesGraph();
+        });
+
+        function loadImagesGraph() {
+            $(".graph").each(function () {
+                var dataRes = $(this).data("graphtype");
+                var xmlHTTP = new XMLHttpRequest();
+                xmlHTTP.open('GET', {plink Sensor:graph} +"?uuid=" + dataRes, true);
+
+                xmlHTTP.responseType = 'arraybuffer';
+
+                xmlHTTP.onload = function (e) {
+                    var arr = new Uint8Array(this.response);
+                    var raw = String.fromCharCode.apply(null, arr);
+                    var b64 = btoa(raw);
+                    var dataURL = "data:image/jpeg;base64," + b64;
+
+                    $('.graphImage-' + dataRes + ' img').attr('src', dataURL);
+                };
+
+                xmlHTTP.send();
+            });
+        }
+
+    </script>
+{/block}
+
+{block content}
+
+<div class="row">
+    <a href="{plink Sensor:addEdit}" class="btn btn-default">Přidat nové čidlo</a>
+</div>
+<br>
+<div n:foreach="$sensors as $sensor">
+    <div class="row well">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-3">Jméno</div>
+                <div class="col-md-9">{$sensor->name}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">Popis</div>
+                <div class="col-md-9">{$sensor->description}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">UUID</div>
+                <div class="col-md-9">{$sensor->uuid}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">Aktivní?</div>
+                <div class="col-md-9">{if $sensor->active}Ano{else}Ne{/if}</div>
+            </div>
+            <div class="row">
+                <a href="{plink Sensor:addEdit uuid => $sensor->uuid}" class="btn btn-default">Upravit čidlo</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <a href="{plink Sensor:graph}?uuid={$sensor->uuid}">
+                <span class="graphImage-{$sensor->uuid}">
+                    <img src="" class="graph" data-graphType="{$sensor->uuid}" style="width: 100%">
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+{*<img src="{$graph}">*}
