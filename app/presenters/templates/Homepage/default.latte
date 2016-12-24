@@ -1,4 +1,21 @@
 {* This is the welcome page, you can delete it *}
 
+{block scripts}
+    {include #parent}
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                var ajax = $.ajax({
+                    type: 'GET',
+                    url: {link Homepage:camPic},
+                });
+                ajax.success(function (e) {
+                    $(".img-responsive").attr("src", "data:image/jpg;charset=utf8;base64," + e);
+                });
+            }, 1000);
+        });
+    </script>
+{/block}
 {block content}
 
+<img alt="105x105" class="img-responsive"/>

@@ -22,7 +22,7 @@ class TemperaturePresenter extends BasePresenter {
 	/**
 	 * Save temperature with values from url
 	 * URL parameters -
-	 * ** sensor
+	 * ** sensor - uuid of sensor
 	 * ** temperature
 	 * **** URL - /temperature/save-temp?sensor=Sdad&temperature=22
 	 */
