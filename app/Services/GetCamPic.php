@@ -11,8 +11,8 @@ namespace App\Services;
 class GetCamPic {
 
 	const DEFAULT_IP = '10.10.10.20';
-	const DEFAULT_PORT = 8099;
-	const PIC_PATH = '/cam.jpg';
+	const DEFAULT_PORT = 8080;
+	const PIC_PATH = '/cam_1.jpg';
 
 	/** @var null|string */
 	public $ip;
@@ -38,6 +38,7 @@ class GetCamPic {
 
 	/**
 	 * Echo getted pic
+	 * @return string
 	 */
 	public function getPic() {
 		$host = $this->ip;
