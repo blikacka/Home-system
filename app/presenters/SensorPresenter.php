@@ -27,6 +27,15 @@ class SensorPresenter extends BasePresenter {
 	public function renderDefault() {
 		$this->template->sensors = $this->em->getRepository(Sensor::class)
 		                                    ->findAll();
+		$this->template->temperature = function($sensor) {
+			$lastTemp = $this->em->getRepository(Temperature::class)
+			                     ->findOneBy(['sensor' => $sensor], ['id' => 'DESC']);
+
+			return [
+				'value' => $lastTemp->temperature,
+				'datetime' => ($lastTemp->created)->format('d.m.Y H:i:s')
+			];
+		};
 	}
 
 	public function getTemperatures($codedUuid = false) {

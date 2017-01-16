@@ -43,20 +43,28 @@
     <div class="row well">
         <div class="col-md-3">
             <div class="row">
-                <div class="col-md-3">Jméno</div>
-                <div class="col-md-9">{$sensor->name}</div>
+                <div class="col-md-4"><small><b>Jméno</b></small></div>
+                <div class="col-md-8">{$sensor->name}</div>
             </div>
             <div class="row">
-                <div class="col-md-3">Popis</div>
-                <div class="col-md-9">{$sensor->description}</div>
+                <div class="col-md-4"><small><b>Poslední&nbsp;°C</b></small></div>
+                <div class="col-md-8">{($temperature($sensor))['value']}</div>
             </div>
             <div class="row">
-                <div class="col-md-3">UUID</div>
-                <div class="col-md-9">{$sensor->uuid}</div>
+                <div class="col-md-4"><small><b>Poslední&nbsp;KDY</b></small></div>
+                <div class="col-md-8">{($temperature($sensor))['datetime']}</div>
             </div>
             <div class="row">
-                <div class="col-md-3">Aktivní?</div>
-                <div class="col-md-9">{if $sensor->active}Ano{else}Ne{/if}</div>
+                <div class="col-md-4"><small><b>Popis</b></small></div>
+                <div class="col-md-8">{$sensor->description}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><small><b>UUID</b></small></div>
+                <div class="col-md-8">{$sensor->uuid}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><small><b>Aktivní?</b></small></div>
+                <div class="col-md-8">{if $sensor->active}Ano{else}Ne{/if}</div>
             </div>
             <div class="row">
                 <a href="{plink Sensor:addEdit uuid => $sensor->uuid}" class="btn btn-default">Upravit čidlo</a>
