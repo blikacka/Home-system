@@ -57,7 +57,7 @@ class TemperaturePresenter extends BasePresenter {
 
 		$file = file_get_contents('./temp.txt', true);
 
-		$sensorValues = explode('|', $file);
+		$sensorValues = explode('|', preg_replace('/\s+/', '', $file));
 
 		foreach ($sensorValues as $sensorValue) {
 			$sensorValueExploded = explode('=', $sensorValue);
