@@ -7,7 +7,7 @@ parameters:
 doctrine:
 	metadata:
 		App: %appDir%/Entities
-	dbname: fasttest
+	dbname: homesys
 	host: 127.0.0.1
 	user: data
 	password: baze
