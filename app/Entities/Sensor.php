@@ -29,17 +29,17 @@ class Sensor {
 	protected $id;
 
 	/**
-	 * @ORM\Column(type="string", length=300, nullable=false)
+	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
 	protected $name;
 
 	/**
-	 * @ORM\Column(type="string", length=300, nullable=true)
+	 * @ORM\Column(type="string", length=255, nullable=true)
 	 */
 	protected $description;
 
 	/**
-	 * @ORM\Column(type="string", length=300, nullable=false)
+	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
 	protected $uuid;
 

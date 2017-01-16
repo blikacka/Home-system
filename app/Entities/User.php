@@ -28,17 +28,17 @@ class User implements IIdentity {
 	protected $id;
 
 	/**
-	 * @ORM\Column(type="string", length=300, unique=true, nullable=false)
+	 * @ORM\Column(type="string", length=255, unique=true, nullable=false)
 	 */
 	protected $email;
 
 	/**
-	 * @ORM\Column(type="string", length=300, nullable=false)
+	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
 	protected $password;
 
 	/**
-	 * @ORM\Column(type="string", length=300, nullable=false)
+	 * @ORM\Column(type="string", length=255, nullable=false)
 	 */
 	protected $name;
 
