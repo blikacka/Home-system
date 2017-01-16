@@ -25,17 +25,20 @@
             <ul class="nav navbar-nav">
 
                 {if $user->isLoggedIn()}
-                    <li class="active">
+                    <li{ifCurrent Homepage:default} class="active"{/ifCurrent}>
                         <a href="{plink Homepage:default}">Hellou {$user->identity->name}</a>
                     </li>
                     <li>
                         <a href="{plink Sign:out}">Odhlásit se</a>
                     </li>
-                    <li>
+                    <li{ifCurrent User:manage} class="active"{/ifCurrent}>
                         <a href="{plink User:manage}">Upravit profil</a>
                     </li>
-                    <li>
+                    <li{ifCurrent Sensor:default} class="active"{/ifCurrent}>
                         <a href="{plink Sensor:default}">Čidla</a>
+                    </li>
+                    <li{ifCurrent Control:default} class="active"{/ifCurrent}>
+                        <a href="{plink Control:default}">Ovládání</a>
                     </li>
                     {*<li></li>*}
                 {else}
