@@ -7,32 +7,35 @@
 <head>
     <meta charset="utf-8">
 
-    <title>{ifset title}{include title|stripHtml} | {/ifset}Nette Sandbox</title>
+    <title>{ifset title}{include title|stripHtml} | {/ifset}Skynet</title>
 
     <link rel="stylesheet" href="{$basePath}/css/style.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
+    <link rel="shortcut icon" href="{$basePath}/favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width">
     {block head}{/block}
 </head>
 
 <body>
 <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
-
 <nav class="navbar navbar-default">
     <div class="container-fluid">
+        <a href="{plink Homepage:default}">
+            <img src="{$basePath}/images/logo_small.png" style="float: left">
+        </a>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
                 {if $user->isLoggedIn()}
-                    <li{ifCurrent Homepage:default} class="active"{/ifCurrent}>
-                        <a href="{plink Homepage:default}">Hellou {$user->identity->name}</a>
-                    </li>
-                    <li>
-                        <a href="{plink Sign:out}">Odhlásit se</a>
-                    </li>
-                    <li{ifCurrent User:manage} class="active"{/ifCurrent}>
-                        <a href="{plink User:manage}">Upravit profil</a>
+
+                    <li class="dropdown{ifCurrent Homepage:default} active{/ifCurrent}{ifCurrent User:manage} active{/ifCurrent}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hellou {$user->identity->name} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{plink Homepage:default}">Úvod</a></li>
+                            <li><a href="{plink User:manage}">Upravit profil</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="{plink Sign:out}">Odhlásit se</a></li>
+                        </ul>
                     </li>
                     <li{ifCurrent Sensor:default} class="active"{/ifCurrent}>
                         <a href="{plink Sensor:default}">Čidla</a>
