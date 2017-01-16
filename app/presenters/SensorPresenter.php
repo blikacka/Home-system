@@ -52,9 +52,12 @@ class SensorPresenter extends BasePresenter {
 
 		$tempData = [];
 		$tempDates = [];
+
 		foreach ($temperatures as $temperature) {
-			$tempData[] = $temperature->temperature;
-			$tempDates[] = $temperature->created->format("d.m.Y H:i");
+			if ($temperature->temperature != null) {
+				$tempData[] = $temperature->temperature;
+				$tempDates[] = $temperature->created->format("d.m.Y H:i");
+			}
 		}
 
 		// Create the graph and specify the scale for both Y-axis
