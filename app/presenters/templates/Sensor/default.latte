@@ -4,7 +4,7 @@
         $(document).ready(function () {
             setInterval(function () {
                 loadImagesGraph();
-            }, 5000);
+            }, 30000);
 
             loadImagesGraph();
         });
@@ -22,7 +22,7 @@
                     var raw = String.fromCharCode.apply(null, arr);
                     var b64 = btoa(raw);
                     var dataURL = "data:image/jpeg;base64," + b64;
-console.log(dataURL);
+
                     $('.graphImage-' + dataRes + ' img').attr('src', dataURL);
                 };
 
@@ -63,9 +63,9 @@ console.log(dataURL);
             </div>
         </div>
         <div class="col-md-9">
-            <a href="{plink Sensor:graph}?uuid={$sensor->uuid}">
-                <span class="graphImage-{$sensor->uuid}">
-                    <img src="" class="graph" data-graphType="{$sensor->uuid}" style="width: 100%">
+            <a href="{plink Sensor:graph}?uuid={$sensor->uuid|codeBase64}">
+                <span class="graphImage-{$sensor->uuid|codeBase64}">
+                    <img src="" class="graph" data-graphType="{$sensor->uuid|codeBase64}" style="width: 100%">
                 </span>
             </a>
         </div>

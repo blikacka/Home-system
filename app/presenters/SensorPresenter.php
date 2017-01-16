@@ -29,22 +29,22 @@ class SensorPresenter extends BasePresenter {
 		                                    ->findAll();
 	}
 
-	public function getTemperatures() {
+	public function getTemperatures($codedUuid = false) {
 		return $this->em->createQueryBuilder()
 		                ->select('t, s')
 		                ->from(Temperature::class, 't')
 		                ->leftJoin('t.sensor', 's')
 		                ->where('s.uuid = :sensor')
-		                ->setParameter('sensor', $this->uuid)
+		                ->setParameter('sensor', $codedUuid ? base64_decode($this->uuid) : $this->uuid)
 		                ->getQuery()
 		                ->getResult();
 	}
 
 	public function renderGraph() {
 		if ($this->uuid != null) {
-			$temperatures = $this->getTemperatures();
+			$temperatures = $this->getTemperatures(true);
 			$sensor = $this->em->getRepository(Sensor::class)
-			                   ->findOneBy(['uuid' => $this->uuid]);
+			                   ->findOneBy(['uuid' => base64_decode($this->uuid)]);
 
 		} else {
 			return;

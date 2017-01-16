@@ -23,6 +23,11 @@ session:
 
 
 services:
+
+	nette.latteFactory:
+		setup:
+			- addFilter('codeBase64', @App\Services\Helpers\Base64Macro)
+
 	# Authenticator
 	- App\Services\Security\Authenticator
 
@@ -34,6 +39,9 @@ services:
 
 	# Services
 	- App\Services\UserService
+
+	# Helpers
+	- App\Services\Helpers\Base64Macro
 
 	router: App\RouterFactory::createRouter
 
