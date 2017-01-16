@@ -10,10 +10,18 @@
         });
 
         function loadImagesGraph() {
+            var params = {};
+            window.location.search
+                    .replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
+                                params[key] = value;
+                            }
+                    );
             $(".graph").each(function () {
                 var dataRes = $(this).data("graphtype");
                 var xmlHTTP = new XMLHttpRequest();
-                xmlHTTP.open('GET', {plink Sensor:graph} +"?uuid=" + dataRes, true);
+                var uuid = Object.keys(params).length > 0 ? ("&uuid=" + dataRes) : ("?uuid=" + dataRes);
+
+                xmlHTTP.open('GET', {plink Sensor:graph} +uuid, true);
 
                 xmlHTTP.responseType = 'arraybuffer';
 
@@ -36,34 +44,55 @@
 {block content}
 
 <div class="row">
-    <a href="{plink Sensor:addEdit}" class="btn btn-default">Přidat nové čidlo</a>
+    <div class="col-md-3">
+        <a href="{plink Sensor:addEdit}" class="btn btn-default">Přidat nové čidlo</a>
+    </div>
+    <div class="col-md-9">
+        {form dateIntervalForm}
+            {label interval /}
+            <select n:name=interval class="btn btn-default"></select>
+            <input n:name=submit class="btn btn-default">
+        {/form}
+    </div>
 </div>
 <br>
 <div n:foreach="$sensors as $sensor">
     <div class="row well">
         <div class="col-md-3">
             <div class="row">
-                <div class="col-md-4"><small><b>Jméno</b></small></div>
+                <div class="col-md-4">
+                    <small><b>Jméno</b></small>
+                </div>
                 <div class="col-md-8">{$sensor->name}</div>
             </div>
             <div class="row">
-                <div class="col-md-4"><small><b>Poslední&nbsp;°C</b></small></div>
+                <div class="col-md-4">
+                    <small><b>Poslední&nbsp;°C</b></small>
+                </div>
                 <div class="col-md-8">{($temperature($sensor))['value']}</div>
             </div>
             <div class="row">
-                <div class="col-md-4"><small><b>Poslední&nbsp;KDY</b></small></div>
+                <div class="col-md-4">
+                    <small><b>Poslední&nbsp;KDY</b></small>
+                </div>
                 <div class="col-md-8">{($temperature($sensor))['datetime']}</div>
             </div>
             <div class="row">
-                <div class="col-md-4"><small><b>Popis</b></small></div>
+                <div class="col-md-4">
+                    <small><b>Popis</b></small>
+                </div>
                 <div class="col-md-8">{$sensor->description}</div>
             </div>
             <div class="row">
-                <div class="col-md-4"><small><b>UUID</b></small></div>
+                <div class="col-md-4">
+                    <small><b>UUID</b></small>
+                </div>
                 <div class="col-md-8">{$sensor->uuid}</div>
             </div>
             <div class="row">
-                <div class="col-md-4"><small><b>Aktivní?</b></small></div>
+                <div class="col-md-4">
+                    <small><b>Aktivní?</b></small>
+                </div>
                 <div class="col-md-8">{if $sensor->active}Ano{else}Ne{/if}</div>
             </div>
             <div class="row">
@@ -71,7 +100,8 @@
             </div>
         </div>
         <div class="col-md-9">
-            <a href="{plink Sensor:graph}?uuid={$sensor->uuid|codeBase64}">
+            {php $uuid = $sensor->uuid|codeBase64}
+            <a href="{plink Sensor:graph uuid => $uuid}">
                 <span class="graphImage-{$sensor->uuid|codeBase64}">
                     <img src="" class="graph" data-graphType="{$sensor->uuid|codeBase64}" style="width: 100%">
                 </span>

@@ -42,7 +42,7 @@ class SignInForm {
 			try {
 				$this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
 				$this->user->login($values->username, $values->password);
-			} catch (AuthenticationException $e) {
+			} catch (\Exception $e) {
 				$form->addError($e->getMessage());
 				return;
 			}
