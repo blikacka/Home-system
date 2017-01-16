@@ -100,7 +100,7 @@
             </div>
         </div>
         <div class="col-md-9">
-            {php $uuid = $sensor->uuid|codeBase64}
+            {php $uuid = base64_encode($sensor->uuid)}
             <a href="{plink Sensor:graph uuid => $uuid}">
                 <span class="graphImage-{$sensor->uuid|codeBase64}">
                     <img src="" class="graph" data-graphType="{$sensor->uuid|codeBase64}" style="width: 100%">

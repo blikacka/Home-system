@@ -171,6 +171,14 @@ class SensorPresenter extends BasePresenter {
 
 		$dataVal = [];
 
+		for ($i = 10; $i < 60; $i += 10) {
+			$dataVal['PT' . $i . 'M'] = $i . ' minut zpět';
+		}
+
+		for ($i = 1; $i < 24; $i++) {
+			$dataVal['PT' . $i . 'H'] = $i . ' hodin zpět';
+		}
+
 		for ($i = 1; $i <= 365; $i++) {
 			$dataVal['P' . $i . 'D'] = $i . ' dnů zpět';
 		}
