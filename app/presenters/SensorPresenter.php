@@ -183,8 +183,8 @@ class SensorPresenter extends BasePresenter {
 			$dataVal['P' . $i . 'D'] = $i . ' dnů zpět';
 		}
 
-		$form->addSelect('interval', 'Interval v grafu', $dataVal);
-		$form->addSubmit('submit', 'Potvrdit');
+		$form->addSelect('interval', 'Změnit interval v grafu', $dataVal);
+		$form->addSubmit('submit', 'Změnit');
 
 		$form['submit']->onClick[] = function($form) {
 			$values = $form->getForm()->getValues();
