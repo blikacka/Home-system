@@ -22,7 +22,7 @@
                     var raw = String.fromCharCode.apply(null, arr);
                     var b64 = btoa(raw);
                     var dataURL = "data:image/jpeg;base64," + b64;
-
+console.log(dataURL);
                     $('.graphImage-' + dataRes + ' img').attr('src', dataURL);
                 };
 
