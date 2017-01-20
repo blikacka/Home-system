@@ -48,3 +48,16 @@ form .error {
 	color: #D00;
 	font-weight: bold;
 }
+
+.main-cam {
+	float: left !important;
+}
+
+.main-graph {
+	margin-left: 30px;
+}
+.main-graph-text {
+	margin-left: 30px;
+	margin-bottom: 5px;
+	font-size: 8px;
+}

@@ -8,6 +8,10 @@ use App\Entities\Temperature;
 use App\Forms\SensorForm;
 use Amenadiel\JpGraph\Graph;
 use Amenadiel\JpGraph\Plot;
+use App\Services\Libraries\LayoutHor;
+use App\Services\Libraries\LayoutVert;
+use App\Services\Libraries\OdoGraph;
+use App\Services\Libraries\Odometer;
 use Nette\Application\UI\Form;
 use Nette\Caching\Storages\DevNullStorage;
 use Nette\DI\Container;
@@ -106,18 +110,20 @@ class SensorPresenter extends BasePresenter {
 		}
 
 		if (count($tempData) > 0) {
-			// Create the graph and specify the scale for both Y-axis
 			$graph = new Graph\Graph(2500, 500);
 			$graph->SetScale("textlin");
+			$graph->SetY2Scale("lin");
 			$graph->SetShadow();
 
-			// Adjust the margin
-			$graph->img->SetMargin(40, 40, 20, 70);
 
 			// Create the two linear plot
 			$lineplot = new Plot\LinePlot($tempData);
 			//		$lineplot->SetStepStyle();
-			$lineplot->mark->SetType(MARK_SQUARE);
+			$lineplot->mark->SetType(MARK_DIAMOND);
+
+			// Add the plot to the graph
+			$graph->Add($lineplot);
+			$graph->AddY2($lineplot);
 
 			// Adjust the axis color
 			$graph->yaxis->SetColor("blue");
@@ -133,14 +139,9 @@ class SensorPresenter extends BasePresenter {
 			$graph->xaxis->SetColor('darkblue', 'black');
 			$graph->img->SetMargin(100, 60, 40, 110);
 
-
 			// Set the colors for the plots
 			$lineplot->SetColor("blue");
 			$lineplot->SetWeight(2);
-
-
-			// Add the plot to the graph
-			$graph->Add($lineplot);
 
 			// Adjust the legend position
 			$graph->legend->SetLayout(LEGEND_HOR);
@@ -166,6 +167,10 @@ class SensorPresenter extends BasePresenter {
 
 	}
 
+	/**
+	 * Form for filter
+	 * @return Form
+	 */
 	public function createComponentDateIntervalForm() {
 		$form = new Form();
 
@@ -187,11 +192,77 @@ class SensorPresenter extends BasePresenter {
 		$form->addSubmit('submit', 'Změnit');
 
 		$form['submit']->onClick[] = function($form) {
-			$values = $form->getForm()->getValues();
+			$values = $form->getForm()
+			               ->getValues();
 			$this->redirect('this', ['dateInterval' => $values['interval']]);
 		};
 
 		return $form;
+	}
+
+	public function renderLastOdo() {
+
+		$sensors = $this->em->createQueryBuilder()
+		                    ->select('s')
+		                    ->from(Sensor::class, 's')
+		                    ->where('s.active = :true')
+		                    ->setParameter('true', true)
+		                    ->getQuery()
+		                    ->getResult();
+
+		$graph = new OdoGraph(250, count($sensors) * 128);
+
+		$odo = [];
+
+		/**
+		 * @var  $i
+		 * @var Sensor $sensor
+		 */
+		foreach ($sensors as $i => $sensor) {
+			/** @var Temperature $temp */
+			$temp = $this->em->createQueryBuilder()
+			                 ->select('t')
+			                 ->from(Temperature::class, 't')
+			                 ->where('t.sensor = :sensor')
+			                 ->setParameter('sensor', $sensor)
+			                 ->andWhere('t.temperature != :empty')
+			                 ->setParameter('empty', '')
+			                 ->andWhere('t.temperature IS NOT NULL')
+			                 ->addOrderBy('t.created', 'DESC')
+			                 ->setMaxResults(1)
+			                 ->getQuery()
+			                 ->getSingleResult();
+			$odo[$i] = new Odometer();
+			$odo[$i]->SetColor("lightyellow");
+			$odo[$i]->needle->Set($temp->temperature);
+			$odo[$i]->needle->SetStyle(NEEDLE_STYLE_SMALL_TRIANGLE, NEEDLE_ARROW_SL);
+			$odo[$i]->caption->SetFont(FF_VERDANA, FS_NORMAL, 6);
+			$odo[$i]->caption->Set($sensor->name . ' | ' . $temp->created->format('d.m.Y H:i:s') . ' | ' . $temp->temperature . ' °C');
+			$odo[$i]->AddIndication(-20, 0, "blue:0.4");
+			$odo[$i]->AddIndication(0, 20, "blue:0.7");
+			$odo[$i]->AddIndication(20, 40, "blue:1.4");
+			$odo[$i]->AddIndication(40, 77, "green:0.9");
+			$odo[$i]->AddIndication(77, 90, "yellow");
+			$odo[$i]->AddIndication(90, 100, "red");
+			$odo[$i]->AddIndication(100, 110, "red:0.8");
+
+			$odo[$i]->SetCenterAreaWidth(0.25);
+			$odo[$i]->scale->Set(-20,110);
+			$odo[$i]->scale->SetTicks(5,2);
+			$odo[$i]->needle->SetLength(0.7);
+		}
+
+		$rows = [];
+		foreach ($odo as $item) {
+			$rows[] = new LayoutHor([
+				$item
+			]);
+		}
+
+		$col1 = new LayoutVert($rows);
+
+		$graph->Add($col1);
+		$graph->Stroke();
 	}
 
 

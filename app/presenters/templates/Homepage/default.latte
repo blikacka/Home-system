@@ -4,6 +4,7 @@
     {include #parent}
     <script>
         $(document).ready(function () {
+
             setInterval(function () {
                 var ajax = $.ajax({
                     type: 'GET',
@@ -13,9 +14,59 @@
                     $(".img-responsive").attr("src", "data:image/jpg;charset=utf8;base64," + e);
                 });
             }, 1000);
+
+            var startTimeMS = 0;  // EPOCH Time of event count started
+            var timerId;          // Current timer handler
+            var timerStep = 30000;   // Time beetwen calls
+
+            function startTimer() {
+                startTimeMS = (new Date()).getTime();
+                timerId = setTimeout(function () {
+                    loadImagesGraph();
+                    eventRaised();
+                }, timerStep);
+            }
+
+            function eventRaised() {
+                clearTimeout(timerId); // clear timer
+                startTimer(); // do again
+            }
+
+            function getRemainingTime() {
+                return Math.floor((timerStep - ( (new Date()).getTime() - startTimeMS )) / 1000);
+            }
+
+            startTimer();
+            setInterval(function () {
+                $(".time-to-refresh").text("Do překreslení grafu zbývá " + getRemainingTime() + "s");
+            }, 100);
+
+            loadImagesGraph();
         });
+
+        function loadImagesGraph() {
+            var xmlHTTP = new XMLHttpRequest();
+            xmlHTTP.open('GET', {plink Sensor:lastOdo}, true);
+
+            xmlHTTP.responseType = 'arraybuffer';
+
+            xmlHTTP.onload = function (e) {
+                var arr = new Uint8Array(this.response);
+                var raw = String.fromCharCode.apply(null, arr);
+                var b64 = btoa(raw);
+                var dataURL = "data:image/jpeg;base64," + b64;
+
+                $('.graph').attr('src', dataURL);
+            };
+
+            xmlHTTP.send();
+        }
+
     </script>
 {/block}
 {block content}
 
-<img alt="105x105" class="img-responsive"/>
+<img alt="105x105" class="img-responsive main-cam"/>
+
+<span class="time-to-refresh main-graph-text"></span>
+<img alt="graf" class="graph main-graph"/>
