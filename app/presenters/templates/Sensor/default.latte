@@ -30,7 +30,7 @@
                     var raw = String.fromCharCode.apply(null, arr);
                     var b64 = btoa(raw);
                     var dataURL = "data:image/jpeg;base64," + b64;
-
+                    $('.spinner-' + dataRes).remove();
                     $('.graphImage-' + dataRes + ' img').attr('src', dataURL);
                 };
 
@@ -103,6 +103,7 @@
             {php $uuid = base64_encode($sensor->uuid)}
             <a href="{plink Sensor:graph uuid => $uuid}">
                 <span class="graphImage-{$sensor->uuid|codeBase64}">
+                     <img src="{$basePath}/images/spinner.gif" class="spinner-{$sensor->uuid|codeBase64}">
                     <img src="" class="graph" data-graphType="{$sensor->uuid|codeBase64}" style="width: 100%">
                 </span>
             </a>
