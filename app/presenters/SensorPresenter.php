@@ -201,68 +201,68 @@ class SensorPresenter extends BasePresenter {
 	}
 
 	public function renderLastOdo() {
-
-		$sensors = $this->em->createQueryBuilder()
-		                    ->select('s')
-		                    ->from(Sensor::class, 's')
-		                    ->where('s.active = :true')
-		                    ->setParameter('true', true)
-		                    ->getQuery()
-		                    ->getResult();
-
-		$graph = new OdoGraph(250, count($sensors) * 128);
-
-		$odo = [];
-
-		/**
-		 * @var  $i
-		 * @var Sensor $sensor
-		 */
-		foreach ($sensors as $i => $sensor) {
-			/** @var Temperature $temp */
-			$temp = $this->em->createQueryBuilder()
-			                 ->select('t')
-			                 ->from(Temperature::class, 't')
-			                 ->where('t.sensor = :sensor')
-			                 ->setParameter('sensor', $sensor)
-			                 ->andWhere('t.temperature != :empty')
-			                 ->setParameter('empty', '')
-			                 ->andWhere('t.temperature IS NOT NULL')
-			                 ->addOrderBy('t.created', 'DESC')
-			                 ->setMaxResults(1)
-			                 ->getQuery()
-			                 ->getSingleResult();
-			$odo[$i] = new Odometer();
-			$odo[$i]->SetColor("lightyellow");
-			$odo[$i]->needle->Set($temp->temperature);
-			$odo[$i]->needle->SetStyle(NEEDLE_STYLE_SMALL_TRIANGLE, NEEDLE_ARROW_SL);
-			$odo[$i]->caption->SetFont(FF_VERDANA, FS_NORMAL, 6);
-			$odo[$i]->caption->Set($sensor->name . ' | ' . $temp->created->format('d.m.Y H:i:s') . ' | ' . $temp->temperature . ' °C');
-			$odo[$i]->AddIndication(-20, 0, "blue:0.4");
-			$odo[$i]->AddIndication(0, 20, "blue:0.7");
-			$odo[$i]->AddIndication(20, 40, "blue:1.4");
-			$odo[$i]->AddIndication(40, 77, "green:0.9");
-			$odo[$i]->AddIndication(77, 90, "yellow");
-			$odo[$i]->AddIndication(90, 100, "red");
-			$odo[$i]->AddIndication(100, 110, "red:0.8");
-
-			$odo[$i]->SetCenterAreaWidth(0.25);
-			$odo[$i]->scale->Set(-20,110);
-			$odo[$i]->scale->SetTicks(5,2);
-			$odo[$i]->needle->SetLength(0.7);
-		}
-
-		$rows = [];
-		foreach ($odo as $item) {
-			$rows[] = new LayoutHor([
-				$item
-			]);
-		}
-
-		$col1 = new LayoutVert($rows);
-
-		$graph->Add($col1);
-		$graph->Stroke();
+//
+//		$sensors = $this->em->createQueryBuilder()
+//		                    ->select('s')
+//		                    ->from(Sensor::class, 's')
+//		                    ->where('s.active = :true')
+//		                    ->setParameter('true', true)
+//		                    ->getQuery()
+//		                    ->getResult();
+//
+//		$graph = new OdoGraph(250, count($sensors) * 128);
+//
+//		$odo = [];
+//
+//		/**
+//		 * @var  $i
+//		 * @var Sensor $sensor
+//		 */
+//		foreach ($sensors as $i => $sensor) {
+//			/** @var Temperature $temp */
+//			$temp = $this->em->createQueryBuilder()
+//			                 ->select('t')
+//			                 ->from(Temperature::class, 't')
+//			                 ->where('t.sensor = :sensor')
+//			                 ->setParameter('sensor', $sensor)
+//			                 ->andWhere('t.temperature != :empty')
+//			                 ->setParameter('empty', '')
+//			                 ->andWhere('t.temperature IS NOT NULL')
+//			                 ->addOrderBy('t.created', 'DESC')
+//			                 ->setMaxResults(1)
+//			                 ->getQuery()
+//			                 ->getSingleResult();
+//			$odo[$i] = new Odometer();
+//			$odo[$i]->SetColor("lightyellow");
+//			$odo[$i]->needle->Set($temp->temperature);
+//			$odo[$i]->needle->SetStyle(NEEDLE_STYLE_SMALL_TRIANGLE, NEEDLE_ARROW_SL);
+//			$odo[$i]->caption->SetFont(FF_VERDANA, FS_NORMAL, 6);
+//			$odo[$i]->caption->Set($sensor->name . ' | ' . $temp->created->format('d.m.Y H:i:s') . ' | ' . $temp->temperature . ' °C');
+//			$odo[$i]->AddIndication(-20, 0, "blue:0.4");
+//			$odo[$i]->AddIndication(0, 20, "blue:0.7");
+//			$odo[$i]->AddIndication(20, 40, "blue:1.4");
+//			$odo[$i]->AddIndication(40, 77, "green:0.9");
+//			$odo[$i]->AddIndication(77, 90, "yellow");
+//			$odo[$i]->AddIndication(90, 100, "red");
+//			$odo[$i]->AddIndication(100, 110, "red:0.8");
+//
+//			$odo[$i]->SetCenterAreaWidth(0.25);
+//			$odo[$i]->scale->Set(-20,110);
+//			$odo[$i]->scale->SetTicks(5,2);
+//			$odo[$i]->needle->SetLength(0.7);
+//		}
+//
+//		$rows = [];
+//		foreach ($odo as $item) {
+//			$rows[] = new LayoutHor([
+//				$item
+//			]);
+//		}
+//
+//		$col1 = new LayoutVert($rows);
+//
+//		$graph->Add($col1);
+//		$graph->Stroke();
 	}
 
 
