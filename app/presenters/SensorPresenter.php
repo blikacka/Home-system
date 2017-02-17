@@ -81,75 +81,75 @@ class SensorPresenter extends BasePresenter {
 	}
 
 	public function renderGraph() {
-		if ($this->uuid === null) {
-			return;
-		}
-
-		$temperatures = $this->getTemperatures(true, (new \DateTime())->sub(new \DateInterval($this->getDateInterval())));
-		$sensor = $this->em->getRepository(Sensor::class)
-		                   ->findOneBy(['uuid' => base64_decode($this->uuid)]);
-
-		$tempData = [];
-		$tempDates = [];
-
-		$index = 0;
-
-		$sumTemperatures = count($temperatures);
-		$maxResults = (int)ceil($sumTemperatures / 40);
-
-		foreach ($temperatures as $temperature) {
-			if ($temperature->temperature != null) {
-				$tempData[] = $temperature->temperature;
-				if (($index % $maxResults) == 0) {
-					$tempDates[] = $temperature->created->format("d.m.Y H:i");
-				} else {
-					$tempDates[] = "";
-				}
-				$index++;
-			}
-		}
-
-		if (count($tempData) > 0) {
-			$graph = new Graph\Graph(2500, 500);
-			$graph->SetScale("textlin");
-			$graph->SetY2Scale("lin");
-			$graph->SetShadow();
-
-
-			// Create the two linear plot
-			$lineplot = new Plot\LinePlot($tempData);
-			//		$lineplot->SetStepStyle();
-			$lineplot->mark->SetType(MARK_DIAMOND);
-
-			// Add the plot to the graph
-			$graph->Add($lineplot);
-			$graph->AddY2($lineplot);
-
-			// Adjust the axis color
-			$graph->yaxis->SetColor("blue");
-
-			$graph->title->Set($sensor->name);
-
-			$graph->title->SetFont(FF_FONT1, FS_BOLD);
-			$graph->xaxis->SetFont(FF_VERDANA, FS_NORMAL, 6);
-			$graph->yaxis->SetFont(FF_VERDANA, FS_NORMAL, 8);
-
-			$graph->xaxis->SetTickLabels($tempDates);
-			$graph->xaxis->SetLabelAngle(50);
-			$graph->xaxis->SetColor('darkblue', 'black');
-			$graph->img->SetMargin(100, 60, 40, 110);
-
-			// Set the colors for the plots
-			$lineplot->SetColor("blue");
-			$lineplot->SetWeight(2);
-
-			// Adjust the legend position
-			$graph->legend->SetLayout(LEGEND_HOR);
-			$graph->legend->Pos(0.4, 0.95, "center", "bottom");
-
-			// Display the graph
-			$graph->Stroke();
-		}
+//		if ($this->uuid === null) {
+//			return;
+//		}
+//
+//		$temperatures = $this->getTemperatures(true, (new \DateTime())->sub(new \DateInterval($this->getDateInterval())));
+//		$sensor = $this->em->getRepository(Sensor::class)
+//		                   ->findOneBy(['uuid' => base64_decode($this->uuid)]);
+//
+//		$tempData = [];
+//		$tempDates = [];
+//
+//		$index = 0;
+//
+//		$sumTemperatures = count($temperatures);
+//		$maxResults = (int)ceil($sumTemperatures / 40);
+//
+//		foreach ($temperatures as $temperature) {
+//			if ($temperature->temperature != null) {
+//				$tempData[] = $temperature->temperature;
+//				if (($index % $maxResults) == 0) {
+//					$tempDates[] = $temperature->created->format("d.m.Y H:i");
+//				} else {
+//					$tempDates[] = "";
+//				}
+//				$index++;
+//			}
+//		}
+//
+//		if (count($tempData) > 0) {
+//			$graph = new Graph\Graph(2500, 500);
+//			$graph->SetScale("textlin");
+//			$graph->SetY2Scale("lin");
+//			$graph->SetShadow();
+//
+//
+//			// Create the two linear plot
+//			$lineplot = new Plot\LinePlot($tempData);
+//			//		$lineplot->SetStepStyle();
+//			$lineplot->mark->SetType(MARK_DIAMOND);
+//
+//			// Add the plot to the graph
+//			$graph->Add($lineplot);
+//			$graph->AddY2($lineplot);
+//
+//			// Adjust the axis color
+//			$graph->yaxis->SetColor("blue");
+//
+//			$graph->title->Set($sensor->name);
+//
+//			$graph->title->SetFont(FF_FONT1, FS_BOLD);
+//			$graph->xaxis->SetFont(FF_VERDANA, FS_NORMAL, 6);
+//			$graph->yaxis->SetFont(FF_VERDANA, FS_NORMAL, 8);
+//
+//			$graph->xaxis->SetTickLabels($tempDates);
+//			$graph->xaxis->SetLabelAngle(50);
+//			$graph->xaxis->SetColor('darkblue', 'black');
+//			$graph->img->SetMargin(100, 60, 40, 110);
+//
+//			// Set the colors for the plots
+//			$lineplot->SetColor("blue");
+//			$lineplot->SetWeight(2);
+//
+//			// Adjust the legend position
+//			$graph->legend->SetLayout(LEGEND_HOR);
+//			$graph->legend->Pos(0.4, 0.95, "center", "bottom");
+//
+//			// Display the graph
+//			$graph->Stroke();
+//		}
 	}
 
 	public function createComponentSensorForm() {
