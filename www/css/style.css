@@ -60,3 +60,7 @@ form .error {
     margin-bottom: 5px;
     font-size: 8px;
 }
+
+.displayNone {
+    display: none;
+}

@@ -50,8 +50,11 @@
                 var lastTempElement = $(".last-temp-" + dataRes);
                 var lastWhenElement = $(".last-when-" + dataRes);
                 var ajax = $.ajax({
-                    url: {plink getTempData!} +uuid
-                })
+                    url: {plink getTempData!} +uuid,
+                    beforeSend: function() {
+                        $(".spinner-" + dataRes).css('display', 'inline-block');
+                    }
+                });
 
                 ajax.success(function (data) {
                     var lastElement = data[data.length - 1];
@@ -60,7 +63,7 @@
                     lastWhenElement.text(lastDate.toLocaleString('cs-CZ'));
                     lastTempElement.text(lastElement[1]);
                     drawBackgroundColor(dataRes, data);
-                    $(".spinner-" + dataRes).remove();
+                    $(".spinner-" + dataRes).css('display', 'none');
                 });
 
             });
