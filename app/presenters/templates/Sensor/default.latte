@@ -98,7 +98,12 @@
                 backgroundColor: '#f1f8e9',
                 legend: {
                     position: 'bottom'
-                },
+                },explorer: {
+                    actions: ['dragToZoom', 'rightClickToReset'],
+                    axis: 'horizontal',
+                    keepInBounds: true,
+                    maxZoomIn: 10.0
+                }
 
 
             };
@@ -161,14 +166,20 @@
             <div class="row">
                 <a href="{plink Sensor:addEdit uuid => $sensor->uuid}" class="btn btn-default">Upravit čidlo</a>
             </div>
+            <div class="row">
+                <div class="spinner-{$sensor->uuid|codeBase64}" style="padding-top: 15px; display: inline-block;">
+                    <h3>Načítám data grafu...&nbsp;<img src="{$basePath}/images/spinner.gif"></h3>
+                </div>
+            </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9" style="text-align: center">
             {php $uuid = base64_encode($sensor->uuid)}
-            <a href="{plink Sensor:graph uuid => $uuid}">
-                <span class="graphImage-{$sensor->uuid|codeBase64}">
-                    <img src="{$basePath}/images/spinner.gif" class="spinner-{$sensor->uuid|codeBase64}">
-                    <div class="graph" id="chart_div_{$sensor->uuid|codeBase64}" data-graphType="{$sensor->uuid|codeBase64}"></div>
-                </span>
+            <div><strong><small>Vybráním oblasti v grafu data přiblížíš, pravým klikem do grafu oddálíš</small></strong></div>
+            <span class="graphImage-{$sensor->uuid|codeBase64}">
+                <div class="graph" id="chart_div_{$sensor->uuid|codeBase64}" data-graphType="{$sensor->uuid|codeBase64}"></div>
+            </span>
+            <a href="{plink Sensor:graph uuid => $uuid}" target="_blank">
+                Otevřít tento graf v novém okně
             </a>
         </div>
     </div>
