@@ -40,6 +40,13 @@ class SensorPresenter extends BasePresenter {
 			$lastTemp = $this->em->getRepository(Temperature::class)
 			                     ->findOneBy(['sensor' => $sensor], ['id' => 'DESC']);
 
+			if ($lastTemp === null) {
+				return [
+					'value' => 0,
+				    'datetime' => (new \DateTime())->format('d.m.Y H:i:s')
+				];
+			}
+
 			return [
 				'value' => $lastTemp->temperature,
 				'datetime' => ($lastTemp->created)->format('d.m.Y H:i:s')

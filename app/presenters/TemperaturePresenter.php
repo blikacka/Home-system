@@ -111,6 +111,35 @@ class TemperaturePresenter extends BasePresenter {
 		}
 
 		$this->em->flush();
+		$this->sendResponse(new JsonResponse(['status' => 'ok']));
+		$this->terminate();
+	}
+
+	/**
+	 * Save temperature from file specified by logtemp
+	 * URL - /temperature/save-temp-from-logtemp
+	 */
+	public function actionSaveTempFromLogtemp() {
+		$csv = @array_map('str_getcsv', @file('./last.csv'));
+
+		if ($csv !== null) {
+			foreach ($csv as $data) {
+				$sensorUuid = $data[1] ?? null;
+				$sensor = $sensorUuid === null ? null : $this->em->getRepository(Sensor::class)
+				                                                 ->findOneBy(['uuid' => $sensorUuid]);
+
+				if ($sensor !== null) {
+					$temperature = new Temperature();
+					$temperature->temperature = $data[2] ?? null;
+					$temperature->sensor = $sensor;
+					$this->em->persist($temperature);
+				}
+			}
+		}
+
+		$this->em->flush();
+		$this->sendResponse(new JsonResponse(['status' => 'ok']));
+		$this->terminate();
 	}
 
 }
