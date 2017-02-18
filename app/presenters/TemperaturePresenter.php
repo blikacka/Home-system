@@ -90,4 +90,20 @@ class TemperaturePresenter extends BasePresenter {
 		$this->terminate();
 	}
 
+	public function actionReadAndSaveTempFromSystem() {
+		$sensors = $this->em->getRepository(Sensor::class)
+		                    ->findBy(['active' => true]);
+
+		$sensorsUuid = [];
+		foreach ($sensors as $sensor) {
+			$sensorPath = '/mnt/1wire/'. $sensor->uuid .'/temperature';
+			$tempSensorRawData = implode('', file($sensorPath));
+			dd($tempSensorRawData);
+		}
+
+
+
+		dd($sensorsUuid);
+	}
+
 }
