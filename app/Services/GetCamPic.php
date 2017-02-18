@@ -45,22 +45,22 @@ class GetCamPic {
 		$port = $this->port;
 		$path = $this->picPath; //or .dll, etc. for authnet, etc.
 		$poststring = "";
-		$poststring = substr($poststring, 0, -1);
+		$poststring = @substr($poststring, 0, -1);
 		$img = "";
 
-		$fp = fsockopen($host, $port, $errno, $errstr, $timeout = 30);
+		$fp = @fsockopen($host, $port, $errno, $errstr, $timeout = 2);
 
 		if (!$fp) {
-			echo "$errstr ($errno)\n";
+			echo null;
 		} else {
 
 			//send the server request
-			fputs($fp, "POST $path HTTP/1.1\r\n");
-			fputs($fp, "Host: $host\r\n");
-			fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
-			fputs($fp, "Content-length: " . strlen($poststring) . "\r\n");
-			fputs($fp, "Connection: close\r\n\r\n");
-			fputs($fp, $poststring . "\r\n\r\n");
+			@fputs($fp, "POST $path HTTP/1.1\r\n");
+			@fputs($fp, "Host: $host\r\n");
+			@fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
+			@fputs($fp, "Content-length: " . @strlen($poststring) . "\r\n");
+			@fputs($fp, "Connection: close\r\n\r\n");
+			@fputs($fp, $poststring . "\r\n\r\n");
 			$im = 0;
 			while (!feof($fp)) {
 				$img .= fgets($fp, 4096);
@@ -69,7 +69,7 @@ class GetCamPic {
 			$sourceimg = strchr($img, "\r\n\r\n"); //removes headers
 			$sourceimg = ltrim($sourceimg); //remove whitespaces from begin of the string
 			$img = base64_encode($sourceimg);
-			fclose($fp);
+			@fclose($fp);
 		}
 		echo $img;
 

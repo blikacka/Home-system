@@ -1,15 +1,43 @@
 {block scripts}
     {include #parent}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         $(document).ready(function () {
-            setInterval(function () {
-                loadImagesGraph();
-            }, 30000);
-
             loadImagesGraph();
+
+            var startTimeMS = 0;  // EPOCH Time of event count started
+            var timerId;          // Current timer handler
+            var timerStep = 30000;   // Time beetwen calls
+
+            function startTimer() {
+                startTimeMS = (new Date()).getTime();
+                timerId = setTimeout(function () {
+                    loadImagesGraph();
+                    eventRaised();
+                }, timerStep);
+            }
+
+            function eventRaised() {
+                clearTimeout(timerId); // clear timer
+                startTimer(); // do again
+            }
+
+            function getRemainingTime() {
+                return Math.floor((timerStep - ( (new Date()).getTime() - startTimeMS )) / 1000);
+            }
+
+            startTimer();
+            setInterval(function () {
+                $(".time-to-refresh").text("Do překreslení grafů zbývá " + getRemainingTime() + "s");
+            }, 100);
+
         });
 
         function loadImagesGraph() {
+            google.charts.load('current', {
+                packages: ['corechart', 'line'], 'language': 'cs'
+            });
+//            google.charts.setOnLoadCallback(drawBackgroundColor);
             var params = {};
             window.location.search
                     .replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
@@ -18,24 +46,61 @@
                     );
             $(".graph").each(function () {
                 var dataRes = $(this).data("graphtype");
-                var xmlHTTP = new XMLHttpRequest();
-                var uuid = Object.keys(params).length > 0 ? ("&uuid=" + dataRes) : ("?uuid=" + dataRes);
+                var uuid = Object.keys(params).length > 0 ? ("&uuid=" + dataRes) : ("&uuid=" + dataRes);
+                var lastTempElement = $(".last-temp-" + dataRes);
+                var lastWhenElement = $(".last-when-" + dataRes);
+                var ajax = $.ajax({
+                    url: {plink getTempData!} +uuid
+                })
 
-                xmlHTTP.open('GET', {plink Sensor:graph} +uuid, true);
+                ajax.success(function (data) {
+                    var lastElement = data[data.length - 1];
 
-                xmlHTTP.responseType = 'arraybuffer';
+                    var lastDate = new Date(lastElement[0]);
+                    lastWhenElement.text(lastDate.toLocaleString('cs-CZ'));
+                    lastTempElement.text(lastElement[1]);
+                    drawBackgroundColor(dataRes, data);
+                    $(".spinner-" + dataRes).remove();
+                });
 
-                xmlHTTP.onload = function (e) {
-                    var arr = new Uint8Array(this.response);
-                    var raw = String.fromCharCode.apply(null, arr);
-                    var b64 = btoa(raw);
-                    var dataURL = "data:image/jpeg;base64," + b64;
-                    $('.spinner-' + dataRes).remove();
-                    $('.graphImage-' + dataRes + ' img').attr('src', dataURL);
-                };
-
-                xmlHTTP.send();
             });
+
+        }
+
+        function drawBackgroundColor(idElement, testData) {
+            var data = new google.visualization.DataTable();
+            data.addColumn('datetime', 'Čas');
+            data.addColumn('number', 'Teplota');
+
+
+            var fullData = [];
+
+            $.each(testData, function (key, val) {
+                fullData[key] = [new Date(val[0]), val[1]];
+            });
+
+            data.addRows(fullData);
+
+            var options = {
+                hAxis: {
+                    format: 'HH:mm',
+                    gridlines: {
+                        count: 15
+                    }
+
+                },
+                vAxis: {
+                    title: 'Teplota',
+                },
+                backgroundColor: '#f1f8e9',
+                legend: {
+                    position: 'bottom'
+                },
+
+
+            };
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div_' + idElement));
+            chart.draw(data, options)
         }
 
     </script>
@@ -54,6 +119,7 @@
             <input n:name=submit class="btn btn-default">
         {/form}
     </div>
+    <div class="time-to-refresh"></div>
 </div>
 <br>
 <div n:foreach="$sensors as $sensor">
@@ -69,13 +135,13 @@
                 <div class="col-md-4">
                     <small><b>Poslední&nbsp;°C</b></small>
                 </div>
-                <div class="col-md-8">{($temperature($sensor))['value']}</div>
+                <div class="col-md-8 last-temp-{$sensor->uuid|codeBase64}">{($temperature($sensor))['value']}</div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <small><b>Poslední&nbsp;KDY</b></small>
                 </div>
-                <div class="col-md-8">{($temperature($sensor))['datetime']}</div>
+                <div class="col-md-8 last-when-{$sensor->uuid|codeBase64}">{($temperature($sensor))['datetime']}</div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -90,23 +156,17 @@
                 <div class="col-md-8">{$sensor->uuid}</div>
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <small><b>Aktivní?</b></small>
-                </div>
-                <div class="col-md-8">{if $sensor->active}Ano{else}Ne{/if}</div>
-            </div>
-            <div class="row">
                 <a href="{plink Sensor:addEdit uuid => $sensor->uuid}" class="btn btn-default">Upravit čidlo</a>
             </div>
         </div>
         <div class="col-md-9">
-            {*{php $uuid = base64_encode($sensor->uuid)}*}
-            {*<a href="{plink Sensor:graph uuid => $uuid}">*}
-                {*<span class="graphImage-{$sensor->uuid|codeBase64}">*}
-                     {*<img src="{$basePath}/images/spinner.gif" class="spinner-{$sensor->uuid|codeBase64}">*}
-                    {*<img src="" class="graph" data-graphType="{$sensor->uuid|codeBase64}" style="width: 100%">*}
-                {*</span>*}
-            {*</a>*}
+            {php $uuid = base64_encode($sensor->uuid)}
+            <a href="{plink Sensor:graph uuid => $uuid}">
+                <span class="graphImage-{$sensor->uuid|codeBase64}">
+                    <img src="{$basePath}/images/spinner.gif" class="spinner-{$sensor->uuid|codeBase64}">
+                    <div class="graph" id="chart_div_{$sensor->uuid|codeBase64}" data-graphType="{$sensor->uuid|codeBase64}"></div>
+                </span>
+            </a>
         </div>
     </div>
 </div>

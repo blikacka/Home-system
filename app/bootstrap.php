@@ -2,6 +2,11 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+function dd() {
+	call_user_func_array('dump', func_get_args());
+	die();
+}
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED & ~E_USER_WARNING & ~E_USER_NOTICE & ~E_WARNING & LOG_NOTICE);
 $configurator = new Nette\Configurator;
 
 $configurator->setDebugMode(TRUE); // enable for your remote IP

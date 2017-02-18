@@ -1,0 +1,50 @@
+{block content}
+<a href="{plink getTempData!}">GET</a>
+{dump $testData}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div id="chart_div"></div>
+<script>
+    google.charts.load('current', {
+        packages: ['corechart', 'line'], 'language': 'cs'
+    });
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+
+    function drawBackgroundColor() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('datetime', 'Čas');
+        data.addColumn('number', 'Teplota');
+
+        var testData = {$testData};
+
+        var fullData = [];
+
+        $.each(testData, function (key, val) {
+            fullData[key] = [new Date(val[0]), val[1]];
+        });
+        console.log(fullData);
+
+        data.addRows(fullData);
+
+        var options = {
+            hAxis: {
+                format: 'HH:mm',
+                gridlines: {
+                    count: 15
+                }
+
+            },
+            vAxis: {
+                title: 'Teplota',
+            },
+            backgroundColor: '#f1f8e9',
+            legend: {
+                position: 'bottom'
+            },
+
+
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>

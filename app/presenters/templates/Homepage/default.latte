@@ -5,15 +5,16 @@
     <script>
         $(document).ready(function () {
 
-            setInterval(function () {
+            function ajaxCallCamPic() {
                 var ajax = $.ajax({
                     type: 'GET',
                     url: {link Homepage:camPic},
                 });
                 ajax.success(function (e) {
                     $(".img-responsive").attr("src", "data:image/jpg;charset=utf8;base64," + e);
+                    ajaxCallCamPic();
                 });
-            }, 1000);
+            }
 
             var startTimeMS = 0;  // EPOCH Time of event count started
             var timerId;          // Current timer handler
@@ -42,6 +43,7 @@
             }, 100);
 
             loadImagesGraph();
+            ajaxCallCamPic();
         });
 
         function loadImagesGraph() {
