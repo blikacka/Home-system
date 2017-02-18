@@ -22,6 +22,7 @@
 # m h  dom mon dow   command
 @reboot sudo -u root owfs
 @reboot sudo -u root python /var/www/html/turnOffAll.py
-@reboot sudo -u root screen -d -m watch -n 5 sh /root/teplotyN.sh
-*/1 * * * * curl --request GET 'http://10.10.10.148:1019/Home-system/www/temperature/save-temp-from-file?cronHash=cb7ddd82ced9a4e1afd7abcf13cd8b862475bf55cc8feba0bf95d1fc03bdc536' >/dev/null 2>&1
+#@reboot sudo -u root screen -d -m watch -n 5 sh /root/teplotyN.sh
+*/1 * * * * curl --request GET 'http://10.10.10.148:1019/Home-system/www/temperature/read-and-save-temp-from-system?cronHash=cb7ddd82ced9a4e1afd7abcf13cd8b862475bf55cc8feba0bf95d1fc03bdc536' >/dev/null 2>&1
+#*/1 * * * * curl --request GET 'http://10.10.10.148:1019/Home-system/www/temperature/save-temp-from-file?cronHash=cb7ddd82ced9a4e1afd7abcf13cd8b862475bf55cc8feba0bf95d1fc03bdc536' >/dev/null 2>&1
 */1 * * * * sh /root/procesor_temp.sh > /dev/null 2>&1
