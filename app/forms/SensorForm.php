@@ -63,8 +63,8 @@ class SensorForm {
 			$sensor->name = $values->name;
 			$sensor->description = $values->description;
 			$sensor->uuid = $values->uuid;
-			$sensor->active = true;
-			$sensor->activeOnHomepage = true;
+			$sensor->active = $sensor->active ?? true;
+			$sensor->activeOnHomepage = $sensor->activeOnHomepage ?? true;
 			$sensor->ordering = $values->ordering !== null && $values->ordering !== '' ? $values->ordering : 0;
 			$this->em->persist($sensor);
 			$this->em->flush();
