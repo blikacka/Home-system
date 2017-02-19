@@ -41,11 +41,14 @@ class SensorForm {
 		$form->addText('uuid', 'ID čidla')
 		     ->setRequired('Zadejte ID čidla');
 
+		$form->addText('ordering', 'Pořadí na stránce');
+
 		if ($sensor !== null) {
 			$form->setDefaults([
 				'name' => $sensor->name,
 				'description' => $sensor->description,
-				'uuid' => $sensor->uuid
+				'uuid' => $sensor->uuid,
+			    'ordering' => $sensor->ordering
 			]);
 		}
 
@@ -61,6 +64,8 @@ class SensorForm {
 			$sensor->description = $values->description;
 			$sensor->uuid = $values->uuid;
 			$sensor->active = true;
+			$sensor->activeOnHomepage = true;
+			$sensor->ordering = $values->ordering !== null && $values->ordering !== '' ? $values->ordering : 0;
 			$this->em->persist($sensor);
 			$this->em->flush();
 			$onSuccess();

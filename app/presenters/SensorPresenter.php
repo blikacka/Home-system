@@ -34,8 +34,13 @@ class SensorPresenter extends BasePresenter {
 	public $sensorForm;
 
 	public function renderDefault() {
-		$this->template->sensors = $this->em->getRepository(Sensor::class)
-		                                    ->findAll();
+		$this->template->sensors = $this->em->createQueryBuilder()
+		                                    ->select('s')
+		                                    ->from(Sensor::class, 's')
+		                                    ->addOrderBy('s.ordering', 'ASC')
+		                                    ->getQuery()
+		                                    ->getResult();
+
 		$this->template->temperature = function($sensor) {
 			$lastTemp = $this->em->getRepository(Temperature::class)
 			                     ->findOneBy(['sensor' => $sensor], ['id' => 'DESC']);
@@ -43,7 +48,7 @@ class SensorPresenter extends BasePresenter {
 			if ($lastTemp === null) {
 				return [
 					'value' => 0,
-				    'datetime' => (new \DateTime())->format('d.m.Y H:i:s')
+					'datetime' => (new \DateTime())->format('d.m.Y H:i:s')
 				];
 			}
 
@@ -132,7 +137,10 @@ class SensorPresenter extends BasePresenter {
 
 		foreach ($tmp['tempData'] as $key => $item) {
 			$tempDate = (new \DateTime($tmp['tempDates'][$key]))->format('D M d Y H:i:s O');
-			$result[] = [$tempDate, (float)$item];
+			$result[] = [
+				$tempDate,
+				(float)$item
+			];
 		}
 
 		$this->template->testData = $result;
@@ -144,7 +152,10 @@ class SensorPresenter extends BasePresenter {
 
 		foreach ($tmp['tempData'] as $key => $item) {
 			$tempDate = (new \DateTime($tmp['tempDates'][$key]))->format('D M d Y H:i:s O');
-			$result[] = [$tempDate, (float)$item];
+			$result[] = [
+				$tempDate,
+				(float)$item
+			];
 		}
 
 		$this->sendResponse(new JsonResponse($result));
@@ -262,8 +273,9 @@ class SensorPresenter extends BasePresenter {
 		$sensors = $this->em->createQueryBuilder()
 		                    ->select('s')
 		                    ->from(Sensor::class, 's')
-		                    ->where('s.active = :true')
+		                    ->where('s.activeOnHomepage = :true')
 		                    ->setParameter('true', true)
+		                    ->addOrderBy('s.ordering', 'ASC')
 		                    ->getQuery()
 		                    ->getResult();
 

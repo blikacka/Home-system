@@ -16,6 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @property string $description
  * @property string $uuid
  * @property bool   $active
+ * @property bool   $activeOnHomepage
+ * @property int    $ordering
  */
 class Sensor {
 
@@ -48,5 +50,17 @@ class Sensor {
 	 * @var bool
 	 */
 	protected $active;
+
+	/**
+	 * @ORM\Column(type="boolean", nullable=false, name="active_on_homepage")
+	 * @var bool
+	 */
+	protected $activeOnHomepage;
+
+	/**
+	 * @ORM\Column(type="integer", nullable=false, name="ordering")
+	 * @var integer
+	 */
+	protected $ordering;
 
 }
