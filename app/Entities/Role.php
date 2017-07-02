@@ -14,6 +14,7 @@ class Role extends BaseEntity {
 
 	const ADMIN = 1;
 	const USER = 2;
+	const SPECIAL = 3;
 
 	/**
 	 * @ORM\Id

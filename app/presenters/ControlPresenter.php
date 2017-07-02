@@ -12,6 +12,14 @@ use Nette\Application\UI\Form;
 class ControlPresenter extends BasePresenter {
 
 	/**
+	 * @Roles(ADMIN)
+	 * @NotRoleRedirect(Homepage:default)
+	 */
+	public function actionDefault() {
+		parent::startup();
+	}
+
+	/**
 	 * Control buttons
 	 * @return Form
 	 */

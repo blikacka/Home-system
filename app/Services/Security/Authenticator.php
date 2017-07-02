@@ -19,6 +19,11 @@ class Authenticator implements IAuthenticator {
 
 	use SmartObject;
 
+	const AVAILABLE_FOR_LOGIN = [
+		Role::ADMIN,
+		Role::SPECIAL
+	];
+
 	/** @var EntityManager */
 	public $em;
 
@@ -42,7 +47,7 @@ class Authenticator implements IAuthenticator {
 			throw new Security\AuthenticationException('Špatné heslo');
 		}
 
-		if ($user->role->id !== Role::ADMIN) {
+		if (!in_array($user->role->id, self::AVAILABLE_FOR_LOGIN)) {
 			throw new Security\AuthenticationException('Pokračovat dál může pouze uživatel s rozšířeným oprávněním.. Kontaktuj správce (Kubíka)');
 		}
 

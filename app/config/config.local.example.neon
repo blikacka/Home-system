@@ -1,0 +1,18 @@
+parameters:
+	vrchy:
+		URL: ''  				# 1.2.3.4
+		PORT: ''				# 1234
+		RTSP: '' 				# rtsp://1.2.3.4:123/...
+		FULLPATH: ''			# http://%vrchy.URL%:%vrchy.PORT%
+		TEMPPATH: '' 			# http://path.to.temp.page
+		gallery:
+			fullpath: ''		# http://full.path.to.gallery
+			headers:
+				publicKey: ''	# public key defined in gallery, ex. 12a3c4
+				privateKey: ''	# private key defined in gallery, ex. 12a3c4
+			pathMainGallery: ''	# http://full.path.to.main.gallery
+	database:
+		dbname: ''				# database name
+		host: ''				# database host, 127.0.0.1
+		user: ''				# database user
+		password: ''			# database password

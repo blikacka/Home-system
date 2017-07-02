@@ -7,10 +7,10 @@ parameters:
 doctrine:
 	metadata:
 		App: %appDir%/Entities
-	dbname: homesys
-	host: 127.0.0.1
-	user: data
-	password: baze
+	dbname: %database.dbname%
+	host: %database.host%
+	user: %database.user%
+	password: %database.password%
 
 application:
 	errorPresenter: Error

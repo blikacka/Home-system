@@ -1,0 +1,90 @@
+{block content}
+<script type="text/javascript">
+    var height_array = new Array();
+    var width_array = new Array();
+    width_array[1] = 752;
+    height_array[1] = 576;
+    width_array[2] = 720;
+    height_array[2] = 480;
+    var urlAddr = {$vrchyParams['FULLPATH']};
+</script>
+
+<div class="col-md-6">
+    <img src="{$vrchyParams['FULLPATH']}/loading.jpg" class="webcam" id="webcam1" width="100%" height="auto" alt="Live Stream"/>
+</div>
+<div class="col-md-6">
+    <img src="{$vrchyParams['FULLPATH']}/loading.jpg" class="webcam" id="webcam2" width="100%" height="auto" alt="Live Stream"/>
+</div>
+<div class="col-md-6">
+    <OBJECT classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+            codebase="http://downloads.videolan.org/pub/videolan/vlc/latest/win32/axvlc.cab"
+            width="640" height="480" id="vlc" events="True" style="display: inline-block">
+        <param name="Src" value="{$vrchyParams['RTSP']}"/>
+        <param name="ShowDisplay" value="True"/>
+        <param name="AutoLoop" value="False"/>
+        <param name="AutoPlay" value="True"/>
+        <embed id="vlcEmb" type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480"
+               target="{$vrchyParams['RTSP']}" style="display: inline-block"></embed>
+    </OBJECT>
+</div>
+
+<script type="text/javascript">
+    <!--
+    currentCamera1 = 1;
+    errorimg1 = 0;
+    document.images.webcam1.onload = DoIt1();
+    document.images.webcam1.onerror = ErrorImage1();
+    currentCamera2 = 2;
+    errorimg2 = 0;
+    document.images.webcam2.onload = DoIt2();
+    document.images.webcam2.onerror = ErrorImage2();
+
+    DoIt1();
+    DoIt2();
+
+    function LoadImage1() {
+        uniq1 = Math.random();
+        document.images.webcam1.src = urlAddr + "/cam_" + currentCamera1 + ".jpg?uniq=" + uniq1;
+        document.images.webcam1.onload = DoIt1;
+    }
+
+    function ErrorImage1() {
+        errorimg1++;
+        if (errorimg1 > 3) {
+            document.images.webcam1.onload = "";
+            document.images.webcam1.onerror = "";
+            document.images.webcam1.src = "offline.jpg";
+        } else {
+            uniq1 = Math.random();
+            document.images.webcam1.src = urlAddr + "/cam_" + currentCamera1 + ".jpg?uniq=" + uniq1;
+        }
+    }
+    function DoIt1() {
+        errorimg1 = 0;
+        window.setTimeout("LoadImage1();", 40);
+    }
+
+    function LoadImage2() {
+        uniq2 = Math.random();
+        document.images.webcam2.src = urlAddr + "/cam_" + currentCamera2 + ".jpg?uniq=" + uniq2;
+        document.images.webcam2.onload = DoIt2;
+    }
+
+    function ErrorImage2() {
+        errorimg2++;
+        if (errorimg2 > 3) {
+            document.images.webcam2.onload = "";
+            document.images.webcam2.onerror = "";
+            document.images.webcam2.src = "offline.jpg";
+        } else {
+            uniq2 = Math.random();
+            document.images.webcam2.src = urlAddr + "/cam_" + currentCamera2 + ".jpg?uniq=" + uniq2;
+        }
+    }
+    function DoIt2() {
+        errorimg2 = 0;
+        window.setTimeout("LoadImage2();", 40);
+    }
+    //-->
+</script>
+

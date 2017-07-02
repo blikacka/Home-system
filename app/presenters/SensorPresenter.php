@@ -12,6 +12,7 @@ use App\Services\Libraries\LayoutHor;
 use App\Services\Libraries\LayoutVert;
 use App\Services\Libraries\OdoGraph;
 use App\Services\Libraries\Odometer;
+use GuzzleHttp\Client;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\Form;
 use Nette\Caching\Storages\DevNullStorage;
@@ -32,6 +33,52 @@ class SensorPresenter extends BasePresenter {
 
 	/** @var SensorForm @inject */
 	public $sensorForm;
+
+	/**
+	 * @Roles(ADMIN)
+	 * @NotRoleRedirect(Homepage:default)
+	 */
+	public function actionAddEdit() {
+
+	}
+
+	public function actionDefault() {
+
+	}
+
+	public function actionGraph() {
+
+	}
+
+	public function actionLastOdo() {
+
+	}
+
+	/**
+	 * @Roles(ADMIN)
+	 * @NotRoleRedirect(Homepage:default)
+	 */
+	public function actionTest() {
+
+	}
+
+	public function actionVrchy() {
+	}
+
+	public function renderVrchy() {
+
+		$uri = $this->context->getParameters()['vrchy']['TEMPPATH'] ?? null;
+		$client = new Client();
+		$vrchyTemp = $client->get($uri);
+		$contents = $vrchyTemp->getBody()
+		                      ->getContents();
+
+		$contents = str_replace('day.jpg', $uri . 'day.jpg', $contents);
+		$contents = str_replace('week.jpg', $uri . 'week.jpg', $contents);
+		$contents = str_replace('month.jpg', $uri . 'month.jpg', $contents);
+
+		$this->template->vrchyTemp = $contents;
+	}
 
 	public function renderDefault() {
 		$this->template->sensors = $this->em->createQueryBuilder()

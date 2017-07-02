@@ -28,7 +28,7 @@
 
                 {if $user->isLoggedIn()}
 
-                    <li class="dropdown{ifCurrent Homepage:default} active{/ifCurrent}{ifCurrent User:manage} active{/ifCurrent}">
+                    <li class="dropdown{ifCurrent Homepage:default} active{/ifCurrent}{ifCurrent User:manage} active{/ifCurrent} dropdown-name">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hellou {$user->identity->name} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{plink Homepage:default}">Úvod</a></li>
@@ -37,10 +37,31 @@
                             <li><a href="{plink Sign:out}">Odhlásit se</a></li>
                         </ul>
                     </li>
+                    <li{ifCurrent Homepage:default} class="active"{/ifCurrent}>
+                        <a href="{plink Homepage:default}">Úvod</a>
+                    </li>
                     <li{ifCurrent Sensor:default} class="active"{/ifCurrent}>
                         <a href="{plink Sensor:default}">Čidla</a>
                     </li>
-                    <li{ifCurrent Control:default} class="active"{/ifCurrent}>
+
+                    <li class="dropdown{ifCurrent Homepage:vrchy} active{/ifCurrent}{ifCurrent Homepage:vrchyGal} active{/ifCurrent}{ifCurrent Homepage:vrchyGalMain} active{/ifCurrent}{ifCurrent Sensor:vrchy} active{/ifCurrent}">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Vrchy <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li{ifCurrent Homepage:vrchy} class="active"{/ifCurrent}>
+                                <a href="{plink Homepage:vrchy}">Kamery</a>
+                            </li>
+                            <li{ifCurrent Homepage:vrchyGal} class="active"{/ifCurrent}>
+                                <a href="{plink Homepage:vrchyGal}">Galerie nad vchodem</a>
+                            </li>
+                            <li{ifCurrent Homepage:vrchyGalMain} class="active"{/ifCurrent}>
+                                <a href="{plink Homepage:vrchyGalMain}">Galerie hlavní</a>
+                            </li>
+                            <li{ifCurrent Sensor:vrchy} class="active"{/ifCurrent}>
+                                <a href="{plink Sensor:vrchy}">Teplota</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li{ifCurrent Control:default} class="active"{/ifCurrent} n:if="$userRole === $roleADMIN">
                         <a href="{plink Control:default}">Ovládání</a>
                     </li>
                     {*<li></li>*}
@@ -55,7 +76,7 @@
     </div>
 </nav>
 {if $user->isLoggedIn() || ($control->name === 'Sign' && ($control->action === 'in' || $control->action === 'register'))}
-    <div class="container">
+    <div class="{ifCurrent Homepage:vrchyGalMain}container-fluid{else}container{/ifCurrent}">
         {include content}
     </div>
 {/if}
