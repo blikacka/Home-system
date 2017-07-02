@@ -52,6 +52,8 @@ form .error {
   display: none;
 }
 .dropdown-name {
+  font-size: 11px !important;
+  font-weight: bold !important;
   position: absolute !important;
   left: 0px !important;
   width: 161px !important;
