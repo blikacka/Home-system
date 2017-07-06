@@ -3,11 +3,12 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+
 
 /**
  * @author Jakub Cieciala <jakub.cieciala@gmail.com>
  */
-
 class GetCamPic {
 
 	const DEFAULT_IP = '10.10.10.20';
@@ -41,37 +42,18 @@ class GetCamPic {
 	 * @return string
 	 */
 	public function getPic() {
-		$host = $this->ip;
-		$port = $this->port;
-		$path = $this->picPath; //or .dll, etc. for authnet, etc.
-		$poststring = "";
-		$poststring = @substr($poststring, 0, -1);
-		$img = "";
-
-		$fp = @fsockopen($host, $port, $errno, $errstr, $timeout = 2);
-
-		if (!$fp) {
-			echo null;
-		} else {
-
-			//send the server request
-			@fputs($fp, "POST $path HTTP/1.1\r\n");
-			@fputs($fp, "Host: $host\r\n");
-			@fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
-			@fputs($fp, "Content-length: " . @strlen($poststring) . "\r\n");
-			@fputs($fp, "Connection: close\r\n\r\n");
-			@fputs($fp, $poststring . "\r\n\r\n");
-			$im = 0;
-			while (!feof($fp)) {
-				$img .= fgets($fp, 4096);
-			}
-
-			$sourceimg = strchr($img, "\r\n\r\n"); //removes headers
-			$sourceimg = ltrim($sourceimg); //remove whitespaces from begin of the string
-			$img = base64_encode($sourceimg);
-			@fclose($fp);
-		}
-		echo $img;
+		$uri = $this->ip . ($this->port !== null ? ':' . $this->port : '') . ($this->picPath !== null ? '/' . $this->picPath : '');
+		$client = new Client();
+		$response = $client->get($uri, [
+			'headers' => [
+				'Host' => $this->ip,
+				'Content-type' => 'application/x-www-form-urlencoded',
+			],
+			'timeout' => 5
+		])
+		                   ->getBody()
+		                   ->getContents();
+		echo utf8_decode(base64_encode($response));
 
 	}
 }

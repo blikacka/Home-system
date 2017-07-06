@@ -16,6 +16,7 @@
                 });
             }
 
+            {if $userRole === $roleADMIN}
             var startTimeMS = 0;  // EPOCH Time of event count started
             var timerId;          // Current timer handler
             var timerStep = 30000;   // Time beetwen calls
@@ -43,9 +44,11 @@
             }, 100);
 
             loadImagesGraph();
+
+            {/if}
             ajaxCallCamPic();
         });
-
+        {if $userRole === $roleADMIN}
         function loadImagesGraph() {
             var xmlHTTP = new XMLHttpRequest();
             xmlHTTP.open('GET', {plink Sensor:lastOdo}, true);
@@ -62,8 +65,15 @@
             };
 
             xmlHTTP.send();
+
+            var xmlHttpTimeout = setTimeout(ajaxTimeout, 5000);
+
+            function ajaxTimeout() {
+                xmlHTTP.abort();
+            }
         }
 
+        {/if}
     </script>
 {/block}
 {block content}
@@ -71,7 +81,7 @@
     <div class="col-md-9">
         <img alt="105x105" class="img-responsive main-cam"/>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" n:if="$userRole === $roleADMIN">
         <span class="time-to-refresh main-graph-text"></span>
         <img alt="graf" class="graph main-graph"/>
     </div>
