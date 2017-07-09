@@ -1,6 +1,8 @@
 {block scripts}
     {include #parent}
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    {*<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>*}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/dygraph/2.0.0/dygraph.min.css"/>
     <script>
         $(document).ready(function () {
             loadImagesGraph();
@@ -34,10 +36,6 @@
         });
 
         function loadImagesGraph() {
-            google.charts.load('current', {
-                packages: ['corechart', 'line'], 'language': 'cs'
-            });
-//            google.charts.setOnLoadCallback(drawBackgroundColor);
             var params = {};
             window.location.search
                     .replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
@@ -49,9 +47,10 @@
                 var uuid = Object.keys(params).length > 0 ? ("&uuid=" + dataRes) : ("&uuid=" + dataRes);
                 var lastTempElement = $(".last-temp-" + dataRes);
                 var lastWhenElement = $(".last-when-" + dataRes);
+                var tempName = $('.temp-name-' + dataRes);
                 var ajax = $.ajax({
                     url: {plink getTempData!} +uuid,
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $(".spinner-" + dataRes).css('display', 'inline-block');
                     }
                 });
@@ -62,53 +61,25 @@
                     var lastDate = new Date(lastElement[0]);
                     lastWhenElement.text(lastDate.toLocaleString('cs-CZ'));
                     lastTempElement.text(lastElement[1]);
-                    drawBackgroundColor(dataRes, data);
+                    drawBackgroundColor(dataRes, data, tempName.text());
                     $(".spinner-" + dataRes).css('display', 'none');
                 });
 
             });
-
         }
 
-        function drawBackgroundColor(idElement, testData) {
-            var data = new google.visualization.DataTable();
-            data.addColumn('datetime', 'Čas');
-            data.addColumn('number', 'Teplota');
 
-
+        function drawBackgroundColor(idElement, testData, tempName) {
             var fullData = [];
-
             $.each(testData, function (key, val) {
                 fullData[key] = [new Date(val[0]), val[1]];
             });
-
-            data.addRows(fullData);
-
-            var options = {
-                hAxis: {
-                    format: 'HH:mm',
-                    gridlines: {
-                        count: 15
-                    }
-
-                },
-                vAxis: {
-                    title: 'Teplota',
-                },
-                backgroundColor: '#f1f8e9',
-                legend: {
-                    position: 'bottom'
-                },explorer: {
-                    actions: ['dragToZoom', 'rightClickToReset'],
-                    axis: 'horizontal',
-                    keepInBounds: true,
-                    maxZoomIn: 10.0
-                }
-
-
-            };
-            var chart = new google.visualization.LineChart(document.getElementById('chart_div_' + idElement));
-            chart.draw(data, options)
+            new Dygraph(document.getElementById('chart_div_' + idElement), fullData,
+                    {
+                        title: tempName,
+                        labels: ['Čas', 'Teplota'],
+                        legend: 'always',
+                    });
         }
 
     </script>
@@ -137,7 +108,7 @@
                 <div class="col-md-4">
                     <small><b>Jméno</b></small>
                 </div>
-                <div class="col-md-8">{$sensor->name}</div>
+                <div class="col-md-8 temp-name-{$sensor->uuid|codeBase64}">{$sensor->name}</div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -174,9 +145,11 @@
         </div>
         <div class="col-md-9" style="text-align: center">
             {php $uuid = base64_encode($sensor->uuid)}
-            <div><strong><small>Vybráním oblasti v grafu data přiblížíš, pravým klikem do grafu oddálíš</small></strong></div>
-            <span class="graphImage-{$sensor->uuid|codeBase64}">
-                <div class="graph" id="chart_div_{$sensor->uuid|codeBase64}" data-graphType="{$sensor->uuid|codeBase64}"></div>
+            <div><strong>
+                    <small>Vybráním oblasti v grafu data přiblížíš, dvojklikem do grafu oddálíš</small>
+                </strong></div>
+            <span class="graphImage-{$sensor->uuid|codeBase64}" style="width: 100%">
+                <div class="graph" style="width: 100%" id="chart_div_{$sensor->uuid|codeBase64}" data-graphType="{$sensor->uuid|codeBase64}"></div>
             </span>
             <a href="{plink Sensor:graph uuid => $uuid}" target="_blank">
                 Otevřít tento graf v novém okně

@@ -35,7 +35,7 @@ abstract class BasePresenter extends Presenter {
 
 	public function beforeRender() {
 		parent::beforeRender();
-		$this->template->userRole = $this->user->isLoggedIn() ? $this->user->identity->role->id : null;
+		$this->template->userRole = $this->user->isLoggedIn() ? ($this->user->identity->role->id ?? null) : null;
 		foreach (Role::getReflection()
 		             ->getConstants() as $keyRole => $roleId) {
 			$this->template->{'role' . $keyRole} = $roleId;
